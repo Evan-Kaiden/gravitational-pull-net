@@ -131,27 +131,27 @@ def train_population(population, epochs=None, steps=None, debug=False):
 def training_algo(population, epochs, debug=False):
     
     '''initial gradient decent'''
-    accs = train_population(population, steps=epochs, debug=debug)
-    nl_name, nl_model, leader_acc = algo.select_leader(population, accs)
-    initial_best_acc = leader_acc
+    accs = train_population(population, epochs=epochs, debug=debug)
+    nl_name, nl_model, nl_acc = algo.select_leader(population, accs)
+    initial_best_acc = nl_acc
     
     new_population = population
 
     if debug:
-        print(f'Selected Leader {nl_name} | Accuracy {leader_acc:.5f}\nConverging Population to Leader...')
+        print(f'Selected Leader {nl_name} | Accuracy {nl_acc:.5f}\nConverging Population to Leader...')
 
     for i in range(utils.NUM_OPTIMIZATIONS):
         print(f'Starting Optimization {i}')
-        leader_data, new_population = algo.follow_leader(nl_name, nl_model, leader_acc, new_population, debug=debug)
+        leader_data, new_population = algo.follow_leader(nl_name, nl_model, nl_acc, new_population, debug=debug)
         nl_name, nl_model, nl_acc = leader_data.values()
         """Tune new population"""
-        # if debug:
-        print('Tuning Population...')
+        if debug:
+            print('Tuning Population...')
         accs = train_population(new_population, steps=utils.TUNE_STEPS, debug=debug)
 
         """Check if weve found a new leader"""
         tmp_nl_name = nl_name
-        nl_name, nl_model, nl_acc = algo.select_leader(population, accs)
+        nl_name, nl_model, nl_acc = algo.select_leader(new_population, accs)
 
         if nl_name == tmp_nl_name and debug:
             print(f'Models Trained Leader Has Not Changed {nl_name}. Converging Population to Leader...')

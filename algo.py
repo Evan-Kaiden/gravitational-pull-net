@@ -11,8 +11,8 @@ def random_string(n):
   characters = string.ascii_letters + string.digits
   return ''.join(random.choice(characters) for _ in range(n))
 
-def init_models(n, n_inputs):
-    models = {random_string(15) : network(n_inputs) for _ in range(n)}
+def init_models(n):
+    models = {random_string(15) : network() for _ in range(n)}
     return models
 
 def select_leader(models, model_accs):
@@ -59,7 +59,7 @@ def follow_leader(leader_name, leader_model, leader_acc, models, debug=False):
                     competitors[name] = (copy.deepcopy(follower), follower_acc)
                     
 
-                if i - first_update_idx == utils.IMPROVEMENT_CUTOFF_ITERATIONS:            
+                if first_update_idx is not None and i - first_update_idx == utils.IMPROVEMENT_CUTOFF_ITERATIONS:            
                     break
 
     best_follower = max(competitors, key=lambda k : competitors[k][1]) 
