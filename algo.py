@@ -33,7 +33,7 @@ def follow_leader(leader_name, leader_model, leader_acc, models, debug=False):
     }
 
     competitors = {}
-    for name, follower in zip(models.keys(), models.values()):
+    for name, follower in models.items():
         if name != new_leader_info['name']:
             if debug:
                 print(f'Current Leader: {new_leader_info['name']}')
@@ -63,14 +63,14 @@ def follow_leader(leader_name, leader_model, leader_acc, models, debug=False):
                     break
 
     best_follower = max(competitors, key=lambda k : competitors[k][1]) 
-    
+    names, models = [*competitors.keys()] + [new_leader_info['name']], [val[0] for val in competitors.values()] + [new_leader_info['model']]
+
     if competitors[best_follower][1] > leader_acc:
         new_leader_info = {'name' : best_follower, 
                         'model' : competitors[best_follower][0], 
                         'acc' : competitors[best_follower][1]
         }
-
     
-    return new_leader_info
+    return new_leader_info, dict(zip(names, models))
 
 
