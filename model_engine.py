@@ -120,7 +120,7 @@ def test(net, debug=True):
 def train_population(population, epochs=None, steps=None, debug=False):
     accs = []
     for name, network in zip(population.keys(), population.values()):
-        acc = train(network, epochs, steps, debug=debug)
+        acc = train(network, epochs, steps, debug=False)
         if debug:
             print(f'Model {name} | Acc {acc:.5f}')
         accs.append(acc)
